@@ -1,0 +1,382 @@
+/* ========================================
+   FocusTasks 9889 - Styles
+   Mobile-first responsive design
+   ======================================== */
+
+/* CSS Variables */
+:root {
+  --primary: #3b82f6;
+  --primary-dark: #2563eb;
+  --success: #10b981;
+  --danger: #ef4444;
+  --text: #1f2937;
+  --text-muted: #6b7280;
+  --bg: #f9fafb;
+  --bg-alt: #ffffff;
+  --border: #e5e7eb;
+  --focus: 3px solid #3b82f6;
+  --spacing: 1rem;
+  --radius: 0.5rem;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========================================
+   Header
+   ======================================== */
+header {
+  background: var(--bg-alt);
+  border-bottom: 3px solid var(--primary);
+  box-shadow: var(--shadow-md);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing);
+  text-align: center;
+}
+
+h1 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+}
+
+.analytics {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.stat strong {
+  color: var(--text);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.stat-separator {
+  color: var(--border);
+  font-weight: 300;
+}
+
+/* ========================================
+   Main Content - Mobile First (≤480px)
+   ======================================== */
+main {
+  flex: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--spacing);
+  
+  /* Mobile: single column stack */
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 2);
+}
+
+/* ========================================
+   Responsive: Two Columns (≥481px)
+   Using Flexbox with ONE media query
+   ======================================== */
+@media (min-width: 481px) {
+  main {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  
+  .task-section {
+    flex: 1;
+    min-width: 0; /* Allows flex item to shrink below content size */
+  }
+}
+
+/* ========================================
+   Task Sections
+   ======================================== */
+.task-section {
+  background: var(--bg-alt);
+  border-radius: var(--radius);
+  padding: calc(var(--spacing) * 1.5);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+
+h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: var(--spacing);
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--border);
+}
+
+/* ========================================
+   Add Task Form
+   ======================================== */
+.add-task-form {
+  margin-bottom: calc(var(--spacing) * 1.5);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+label {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.input-wrapper {
+  display: flex;
+  gap: 0.5rem;
+}
+
+input[type="text"] {
+  flex: 1;
+  padding: 0.75rem;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 1rem;
+  color: var(--text);
+  transition: border-color 0.2s ease;
+}
+
+input[type="text"]:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Focus indicator for accessibility */
+input[type="text"]:focus-visible {
+  outline: var(--focus);
+  outline-offset: 2px;
+}
+
+.btn-add {
+  padding: 0.75rem 1.5rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+  
+  /* Minimum touch target: 44x44px (WCAG) */
+  min-height: 44px;
+}
+
+.btn-add:hover {
+  background: var(--primary-dark);
+}
+
+.btn-add:focus-visible {
+  outline: var(--focus);
+  outline-offset: 2px;
+}
+
+.error-message {
+  font-size: 0.875rem;
+  color: var(--danger);
+  font-weight: 500;
+  min-height: 1.25rem;
+  display: block;
+}
+
+/* ========================================
+   Task Lists
+   ======================================== */
+.task-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: all 0.2s ease;
+}
+
+.task-item:hover {
+  box-shadow: var(--shadow);
+  transform: translateY(-1px);
+}
+
+.task-checkbox {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--success);
+}
+
+.task-checkbox:focus-visible {
+  outline: var(--focus);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.task-title {
+  flex: 1;
+  font-size: 1rem;
+  color: var(--text);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.task-item.done .task-title {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.btn-delete {
+  flex-shrink: 0;
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  color: var(--danger);
+  border: 1px solid var(--danger);
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  /* Minimum touch target */
+  min-height: 36px;
+}
+
+.btn-delete:hover {
+  background: var(--danger);
+  color: white;
+}
+
+.btn-delete:focus-visible {
+  outline: var(--focus);
+  outline-offset: 2px;
+}
+
+.empty-message {
+  padding: calc(var(--spacing) * 2);
+  text-align: center;
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 0.95rem;
+  background: var(--bg);
+  border-radius: var(--radius);
+  border: 2px dashed var(--border);
+}
+
+/* ========================================
+   Footer
+   ======================================== */
+footer {
+  background: var(--bg-alt);
+  border-top: 1px solid var(--border);
+  padding: calc(var(--spacing) * 1.5);
+  text-align: center;
+  color: var(--text-muted);
+  margin-top: auto;
+}
+
+/* ========================================
+   Accessibility - Focus Rings
+   ======================================== */
+button:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: var(--focus);
+  outline-offset: 2px;
+}
+
+/* Remove outline for mouse users */
+button:focus:not(:focus-visible),
+input:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ========================================
+   Utilities
+   ======================================== */
+[hidden] {
+  display: none !important;
+}
+
+/* ========================================
+   Print Styles
+   ======================================== */
+@media print {
+  header,
+  footer,
+  .add-task-form,
+  .btn-delete {
+    display: none;
+  }
+  
+  body {
+    background: white;
+  }
+  
+  .task-section {
+    box-shadow: none;
+    page-break-inside: avoid;
+  }
+}
+
+/* ========================================
+   Reduced Motion (Accessibility)
+   ======================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
