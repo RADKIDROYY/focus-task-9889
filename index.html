@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="FocusTasks 9889 - Manage your tasks with focus and productivity">
+  <title>FocusTasks 9889</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Semantic header with app title and analytics -->
+  <header role="banner">
+    <div class="header-content">
+      <h1>FocusTasks 9889</h1>
+      <!-- Live analytics area populated by JavaScript -->
+      <div id="analytics" class="analytics" role="status" aria-live="polite">
+        <span class="stat">Active: <strong id="active-count">0</strong></span>
+        <span class="stat-separator">·</span>
+        <span class="stat">Done: <strong id="done-count">0</strong></span>
+        <span class="stat-separator">·</span>
+        <span class="stat">Done %: <strong id="done-percent">0.0%</strong></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main content area -->
+  <main id="main-content">
+    
+    <!-- Active Tasks Section -->
+    <section class="task-section" aria-labelledby="active-heading">
+      <h2 id="active-heading">Active Tasks</h2>
+      
+      <!-- Add task control set -->
+      <form id="add-task-form" class="add-task-form" novalidate>
+        <div class="form-group">
+          <label for="task-input">Task title:</label>
+          <div class="input-wrapper">
+            <input 
+              type="text" 
+              id="task-input" 
+              name="task-title"
+              placeholder="Enter task description..."
+              aria-describedby="task-error"
+              maxlength="200"
+              required>
+            <button type="submit" class="btn-add">Add</button>
+          </div>
+          <!-- Error message area -->
+          <span id="task-error" class="error-message" role="alert" aria-live="assertive"></span>
+        </div>
+      </form>
+
+      <!-- Active tasks list -->
+      <ul id="active-list" class="task-list" role="list">
+        <!-- Tasks will be rendered here dynamically -->
+      </ul>
+      <p class="empty-message" id="active-empty">No active tasks. Add one above!</p>
+    </section>
+
+    <!-- Done Tasks Section -->
+    <section class="task-section" aria-labelledby="done-heading">
+      <h2 id="done-heading">Done Tasks</h2>
+      
+      <!-- Done tasks list -->
+      <ul id="done-list" class="task-list" role="list">
+        <!-- Completed tasks will be rendered here dynamically -->
+      </ul>
+      <p class="empty-message" id="done-empty">No completed tasks yet.</p>
+    </section>
+
+  </main>
+
+  <!-- Optional footer -->
+  <footer role="contentinfo">
+    <p><small>&copy; 2025 FocusTasks 9889 | Stay focused, stay productive</small></p>
+  </footer>
+
+  <!-- External JavaScript -->
+  <script src="app.js"></script>
+</body>
+</html>
