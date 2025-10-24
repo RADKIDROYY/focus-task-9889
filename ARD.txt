@@ -1,0 +1,149 @@
+========================================
+ARCHITECTURE DECISION RECORD (ADR)
+FocusTasks 9889
+========================================
+
+Student ID: 9889
+Date: 2025-01-24
+Application: FocusTasks Task Manager
+
+========================================
+1. CLOSURE-BASED STATE MANAGEMENT
+========================================
+
+DECISION:
+Use a closure-based store (createStore) to encapsulate state instead of global variables.
+
+RATIONALE:
+- ENCAPSULATION: Tasks array is private; external code cannot directly mutate it
+- TESTABILITY: Store can be mocked/injected for unit tests without global state pollution
+- PREDICTABILITY: All mutations flow through controlled API methods (add/toggle/remove)
+- NO ACCIDENTAL MUTATIONS: Prevents bugs from unintended state changes elsewhere in code
+
+ALTERNATIVES CONSIDERED:
+- Global `let tasks = []`: Rejected due to testability issues and mutation risks
+- Class-based store: Rejected for simplicity; closure achieves same goals with less syntax
+
+IMPLEMENTATION:
+```javascript
+function createStore(storageKey) {
+  let tasks = []; // Private to closure
+  return {
+    add(task) { /* ... */ },
+    toggle(id) { /* ... */ },
+    remove(id) { /* ... */ },
+    list() { /* deep clone */ }
+  };
+}
+const store = createStore('focustasks_9889');
+```
+
+========================================
+2. EVENT DELEGATION PATTERN
+========================================
+
+DECISION:
+Use single delegated event listener per container instead of per-element listeners.
+
+RATIONALE:
+- MEMORY EFFICIENCY: 1 listener instead of N listeners (where N = number of tasks)
+- DYNAMIC CONTENT: Automatically handles tasks added/removed without re-binding
+- PERFORMANCE: Fewer event listeners = less memory overhead = faster garbage collection
+- SIMPLICITY: Centralized event handling logic in one place
+
+IMPLEMENTATION:
+```javascript
+// ONE listener on main-content handles all task buttons
+mainContent.addEventListener('click', (e) => {
+  const action = e.target.dataset.action;
+  const taskId = e.target.dataset.id;
+  
+  if (action === 'toggle') store.toggle(taskId);
+  if (action === 'delete') store.remove(taskId);
+});
+```
+
+ALTERNATIVES CONSIDERED:
+- Per-button listeners: Rejected due to memory bloat with many tasks
+- Inline onclick handlers: Prohibited by requirements (CSP violations, maintainability issues)
+
+========================================
+3. FUNCTIONAL ARRAY TRANSFORMATIONS
+========================================
+
+DECISION:
+Use only map/filter/reduce for list operations; no for/while/forEach loops.
+
+RATIONALE:
+- IMMUTABILITY: map/filter return new arrays, preventing accidental state mutations
+- DECLARATIVE: Code reads as "what to do" not "how to do it"
+- COMPOSABILITY: Easy to chain operations: tasks.filter(...).map(...)
+- LESS ERROR-PRONE: No off-by-one errors, no loop variable scope issues
+
+IMPLEMENTATION EXAMPLES:
+```javascript
+// Separate active/done (no for loop)
+const activeTasks = tasks.filter(task => !task.done);
+const doneTasks = tasks.filter(task => task.done);
+
+// Count tasks (no for loop)
+const activeCount = tasks.reduce((count, task) => 
+  task.done ? count : count + 1, 0
+);
+
+// Toggle task (no for loop)
+tasks = tasks.map(task => 
+  task.id === id ? { ...task, done: !task.done } : task
+);
+```
+
+TRADE-OFFS:
+- Slightly less performant than for-loops for very large lists (>10,000 items)
+- Acceptable trade-off: this app typically handles <100 tasks; readability > micro-optimization
+
+========================================
+4. XSS PROTECTION STRATEGY
+========================================
+
+DECISION:
+Use textContent for rendering user-supplied titles; avoid innerHTML with unescaped data.
+
+RATIONALE:
+- AUTOMATIC ESCAPING: textContent treats input as plain text, not HTML
+- XSS PREVENTION: Malicious input like `<script>alert('XSS')</script>` renders as text
+- CLIENT-ONLY SUFFICIENT: For single-user, client-only apps, DOM API escaping is adequate
+
+LIMITATIONS (Multi-User/Server Context):
+1. Server-rendered apps MUST escape on server before sending HTML
+2. Need Content Security Policy (CSP) headers: `script-src 'self'` to block inline scripts
+3. Database stores raw text; escaping is output-layer concern (separation of concerns)
+4. Context-aware escaping needed: HTML context differs from JavaScript/URL contexts
+
+IMPLEMENTATION:
+```javascript
+// Line 98 in app.js: Escaping function
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text; // Browser auto-escapes
+  return div.innerHTML;
+}
+
+// Usage in rendering
+title.textContent = task.title; // Safe: textContent escapes automatically
+```
+
+WHY INSUFFICIENT IN SERVER/MULTI-USER CONTEXTS:
+- Defense-in-depth: Client-side escaping can be bypassed (users disable JS, inspect network)
+- Server must sanitize input AND escape output
+- CSP headers prevent inline script execution even if escaping fails
+- Multi-user apps need per-user context: what one user enters could affect others
+
+========================================
+5. RESPONSIVE LAYOUT STRATEGY
+========================================
+
+DECISION:
+Use Flexbox with single media query at 481px breakpoint.
+
+RATIONALE:
+- MOBILE-FIRST: Default is single-column stack (most
